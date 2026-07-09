@@ -84,8 +84,35 @@ const PlanningEndpointsSection: React.FC = () => {
         }}
       />
 
-      <Alert type="info" icon="info">
-        <strong>تحقق الجغرافيا:</strong> يتم حساب المسافة بين GPS المندوب وإحداثيات pick_up_coordinates الخاصة بالطلب (وليس العميل). إذا كانت المسافة أكثر من 500 متر، يتم رفض تسجيل الوصول.
+      <Alert type="warning" icon="location_on">
+        <strong>التنفيذ البرمجي لقفل المسافة الميداني (500m Geofencing Guard):</strong>
+        <br />
+        يتم حساب المسافة الجيوديسية (Geodesic Distance) بين الإحداثيات المرسلة من هاتف المندوب وإحداثيات نقطة استلام الطلب <code>pick_up_coordinates</code> المخزنة في قاعدة البيانات باستخدام صيغة <strong>Haversine Formula</strong> لتجنب التلاعب.
+        <br />
+        <strong style={{ display: 'block', marginTop: 8 }}>كود الحساب البرمجي المقترح (Haversine Distance in PHP):</strong>
+        <pre style={{ background: '#1e1e1e', color: '#d4d4d4', padding: 12, borderRadius: 6, direction: 'ltr', textAlign: 'left', fontSize: 11, overflowX: 'auto', marginTop: 6 }}>
+{`// Modules/Planning/Services/VisitService.php
+$earthRadius = 6371000; // بالامتار
+
+$latFrom = deg2rad($order->lat);
+$lonFrom = deg2rad($order->lng);
+$latTo = deg2rad($request->lat);
+$lonTo = deg2rad($request->long);
+
+$latDelta = $latTo - $latFrom;
+$lonDelta = $lonTo - $lonFrom;
+
+$angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) +
+    cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+
+$distance = $angle * $earthRadius; // المسافة الفعالة بالمتر
+
+if ($distance > 500) {
+    throw ValidationException::withMessages([
+        'location' => 'عذراً، يجب أن تكون على بعد 500 متر أو أقل من موقع العميل لتسجيل الوصول.'
+    ]);
+}`}
+        </pre>
       </Alert>
 
       <EndpointCard
@@ -176,16 +203,35 @@ const PlanningEndpointsSection: React.FC = () => {
           }}
         />
 
-        <Alert type="warning" icon="warning">
-          <strong>التحكم في التزامن (Concurrency Control):</strong>
+        <Alert type="warning" icon="lock">
+          <strong>التحكم في التزامن برمجياً (Pessimistic Concurrency Lock):</strong>
           <br />
-          - يتم استخدام قفل تزامني (Pessimistic Locking) في المعاملة: SELECT ... FOR UPDATE
+          لحماية الطلبات من التعيين المزدوج إذا قام مندوبان برسم دائرتين متداخلتين وحجز نفس الطلب في نفس الثانية:
           <br />
-          - أي طلب يتم إسناده يُقفل فوراً
-          <br />
-          - إذا حاول مندوب آخر الإسناد في نفس الوقت، يتم حجب طلبه حتى انتهاء المعاملة ثم رفضه بخطأ 422: "Order has already been claimed"
-          <br />
-          - يتم بث حدث فوري (Broadcast) لجميع المناديب الآخرين لتحديث خرائطهم
+          <strong style={{ display: 'block', marginTop: 8 }}>مثال برمجيات Eloquent (SELECT ... FOR UPDATE):</strong>
+          <pre style={{ background: '#1e1e1e', color: '#d4d4d4', padding: 12, borderRadius: 6, direction: 'ltr', textAlign: 'left', fontSize: 11, overflowX: 'auto', marginTop: 6 }}>
+{`// Modules/Planning/Controllers/PlanningController.php
+use Illuminate\\Support\\Facades\\DB;
+
+DB::transaction(function () use ($request, $agentId) {
+    // 1. حجز الطلبات فوراً ومنع العمليات المتزامنة لقراءتها
+    $orders = Order::whereIn('id', $request->order_ids)
+        ->lockForUpdate()
+        ->get();
+
+    foreach ($orders as $order) {
+        if ($order->user_id !== null && $order->user_id !== $agentId) {
+            throw new \\Exception("Order {$order->id} already claimed by another agent.");
+        }
+        
+        // 2. تحديث المندوب والحالة
+        $order->update([
+            'user_id' => $agentId,
+            'status' => OrderStatus::ASSIGNED // 2
+        ]);
+    }
+});`}
+          </pre>
         </Alert>
 
         {/* === Plan Lock and Admin Unlock === */}
