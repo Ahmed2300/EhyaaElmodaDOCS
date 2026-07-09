@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import ApiDocs from './api-docs/ApiDocs';
 import UserJourneys from './user-journeys/UserJourneys';
+import AgentPrototype from './agent-prototype/AgentPrototype';
 import Icon from './api-docs/components/Icon';
 
-type Page = 'api-docs' | 'user-journeys';
+type Page = 'api-docs' | 'user-journeys' | 'agent-prototype';
 
 const apiSectionIds = [
   'architecture', 'access', 'security', 'admin-dashboard', 'models-directory',
@@ -19,6 +20,7 @@ const journeySectionIds = [
 function parseHash(): { page: Page; section: string | null } {
   const hash = window.location.hash.replace('#', '');
   if (!hash) return { page: 'api-docs', section: null };
+  if (hash === 'agent-prototype') return { page: 'agent-prototype', section: null };
   if (journeySectionIds.includes(hash)) return { page: 'user-journeys', section: hash };
   if (apiSectionIds.includes(hash)) return { page: 'api-docs', section: hash };
   return { page: 'api-docs', section: null };
@@ -52,8 +54,12 @@ const App: React.FC = () => {
   const switchPage = (p: Page) => {
     setPage(p);
     setSidebarOpen(false);
-    const firstSection = p === 'api-docs' ? apiSectionIds[0] : journeySectionIds[0];
-    window.location.hash = firstSection;
+    if (p === 'agent-prototype') {
+      window.location.hash = 'agent-prototype';
+    } else {
+      const firstSection = p === 'api-docs' ? apiSectionIds[0] : journeySectionIds[0];
+      window.location.hash = firstSection;
+    }
   };
 
   return (
@@ -80,11 +86,24 @@ const App: React.FC = () => {
           <Icon name="map" size={18} />
           <span>رحلات المستخدم</span>
         </button>
+        <button
+          className={`top-nav-tab ${page === 'agent-prototype' ? 'active' : ''}`}
+          onClick={() => switchPage('agent-prototype')}
+        >
+          <Icon name="phone_iphone" size={18} />
+          <span>نموذج تطبيق المندوب</span>
+        </button>
       </nav>
       {sidebarOpen && (
         <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />
       )}
-      {page === 'api-docs' ? <ApiDocs /> : <UserJourneys />}
+      {page === 'api-docs' && <ApiDocs />}
+      {page === 'user-journeys' && <UserJourneys />}
+      {page === 'agent-prototype' && (
+        <main className="docs-main">
+          <AgentPrototype />
+        </main>
+      )}
     </div>
   );
 };
