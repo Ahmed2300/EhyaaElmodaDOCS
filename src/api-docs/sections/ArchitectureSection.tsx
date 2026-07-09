@@ -8,7 +8,6 @@ const modules = [
   { name: 'Core', purpose: 'الخدمات الجغرافية المشتركة والمحافظات والمناطق والإعدادات', models: 'Governorate, District, Setting, VipZone, RejectZone, AiEvaluatedGrid' },
   { name: 'Customers', purpose: 'ملفات العملاء وتصنيف العملاء المتوقعين وواجهة تحويل Meta API', models: 'Customer, BlockedCustomer' },
   { name: 'ErrorTracing', purpose: 'مراقبة الاستثناءات وتسجيل API', models: 'ErrorTracing' },
-  { name: 'Feedback', purpose: 'شكاوى العملاء وتقييم الخدمة', models: 'Complaint, CustomerRating' },
   { name: 'Financial', purpose: 'إدارة المصروفات التشغيلية وحسابات السلف', models: 'Expense' },
   { name: 'Order', purpose: 'طلبات العملاء العامة وسير عمل الطلبات الإدارية', models: 'Order' },
   { name: 'Planning', purpose: 'تخطيط مسارات التوصيل وجداول المندوبين', models: 'Plan, PlanItem' },

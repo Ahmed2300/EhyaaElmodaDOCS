@@ -14,7 +14,6 @@ const permissions = [
   'manage customers',
   'manage orders',
   'manage plannings',
-  'submit feedback',
   'view reports',
 ];
 

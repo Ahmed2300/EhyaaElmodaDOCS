@@ -10,7 +10,7 @@ const apiSectionIds = [
   'architecture', 'access', 'security', 'admin-dashboard', 'models-directory',
   'auth-endpoints', 'zone-endpoints', 'order-endpoints', 'customer-endpoints',
   'blocklist-endpoints', 'planning-endpoints', 'tracking-endpoints',
-  'feedback-endpoints', 'sse-endpoints', 'reports-endpoints', 'audit', 'next-steps',
+  'sse-endpoints', 'reports-endpoints', 'audit', 'next-steps',
 ];
 
 const journeySectionIds = [

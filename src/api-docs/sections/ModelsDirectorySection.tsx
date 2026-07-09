@@ -191,43 +191,8 @@ const models: ModelSection[] = [
       { role: 'الأدوار الأخرى', permissions: 'لا تملك حق الوصول المباشر لهذه النماذج، ويتم استخدامها داخلياً لمعالجة طلبات العملاء.' },
     ],
   },
-  {
-    id: 'model-ratings',
-    icon: 'stars',
-    name: 'تقييمات العملاء الميدانية',
-    entity: 'Modules\\Feedback\\Models\\CustomerRating',
-    table: 'customer_ratings',
-    attributes: [
-      { field: 'id', type: 'BigInteger (PK)', desc: 'معرّف التقييم' },
-      { field: 'customer_id', type: 'ForeignKey', desc: 'العميل الذي تم تقييمه (يربط بـ customers.id)' },
-      { field: 'user_id', type: 'ForeignKey', desc: 'المندوب/الموظف الفعلي الذي أعطى التقييم للعميل (يربط بـ users.id)' },
-      { field: 'rating', type: 'UnsignedTinyInteger', desc: 'معدل التقييم (من 1 إلى 5 نجوم)' },
-      { field: 'comment', type: 'Text (Nullable)', desc: 'أي ملاحظات نصية مضافة للتقييم' },
-    ],
-    roles: [
-      { role: 'المندوب (Field Agent)', permissions: 'إرسال تقييم للعميل (customer_ratings) بعد إتمام الزيارة وتوريد الأوزان (لقياس جدية العميل).' },
-      { role: 'المشرف العام (Super Admin)', permissions: 'قراءة ومراجعة تقييمات المناديب للعملاء.' },
-    ],
-  },
-  {
-    id: 'model-complaints',
-    icon: 'report',
-    name: 'الشكاوى المرفوعة',
-    entity: 'Modules\\Feedback\\Models\\Complaint',
-    table: 'complaints',
-    attributes: [
-      { field: 'id', type: 'BigInteger (PK)', desc: 'معرّف الشكوى' },
-      { field: 'customer_id', type: 'ForeignKey', desc: 'العميل مقدم الشكوى (يربط بـ customers.id)' },
-      { field: 'subject', type: 'String', desc: 'موضوع الشكوى الرئيسي' },
-      { field: 'description', type: 'Text', desc: 'شرح المشكلة أو التأخير بالتفصيل' },
-      { field: 'priority', type: 'String - Nullable', desc: 'الأولوية المحددة للشكوى (low, normal, high, urgent)' },
-    ],
-    roles: [
-      { role: 'العميل (Guest)', permissions: 'تقديم شكوى من صفحة الهبوط أو التقييمات.' },
-      { role: 'الدعم الفني (Technical Support)', permissions: 'استعراض الشكاوى وحلها ومتابعتها مع الإدارة والمناديب.' },
-      { role: 'المشرف العام (Super Admin)', permissions: 'قراءة ومتابعة الشكاوى المرفوعة وتقارير الأداء.' },
-    ],
-  },
+
+
   {
     id: 'model-blocked',
     icon: 'gavel',

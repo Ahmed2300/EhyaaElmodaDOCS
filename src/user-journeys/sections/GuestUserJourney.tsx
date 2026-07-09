@@ -112,26 +112,16 @@ const GuestUserJourney: React.FC = () => {
         </div>
       </JourneyStep>
 
-      <JourneyStep number={6} title="التقييم والشكاوى بعد الزيارة" icon="rate_review" color={roleColor} isLast
-        apiCalls={[
-          { method: 'POST', path: '/api/v1/feedback/rate', desc: 'تقييم المندوب (1-5 نجوم)' },
-          { method: 'POST', path: '/api/v1/feedback/complain', desc: 'تقديم شكوى فورية' },
-        ]}
-      >
-        <p>بعد إتمام عملية الشراء بواسطة المندوب واستلام الملابس، يحق للعميل:</p>
-        <div className="journey-options">
-          <div className="journey-option" style={{ borderColor: '#1e8e3e' }}>
-            <Icon name="star" size={20} className="journey-option-icon" style={{ color: '#1e8e3e' }} />
-            <div>
-              <strong>تقييم المندوب</strong>
-              <p>إرسال تقييم من 1 إلى 5 نجوم لمستوى رضا العميل عن الخدمة المقدمة</p>
+      <JourneyStep number={6} title="التواصل مع خدمة العملاء (واتساب)" icon="chat" color={roleColor} isLast>
+        <p>بما أن العميل النهائي لا يملك حساباً على النظام لتقديم تقييمات، فإنه في حال وجود أي شكوى، توضيح، أو استفسار، يتم توجيهه للتواصل المباشر مع الدعم الفني وخدمة العملاء:</p>
+        <div className="journey-verification-steps">
+          <div className="journey-verify-item">
+            <div className="journey-verify-icon" style={{ background: '#e8f5e9', color: '#1b5e20' }}>
+              <Icon name="chat" size={20} />
             </div>
-          </div>
-          <div className="journey-option" style={{ borderColor: '#d93025' }}>
-            <Icon name="report" size={20} className="journey-option-icon" style={{ color: '#d93025' }} />
             <div>
-              <strong>شكوى فورية</strong>
-              <p>رفع شكوى رسمية في حال حدوث أي مشكلة تشغيلية أثناء عملية الشراء أو الاستلام</p>
+              <strong>التواصل الفوري عبر الواتساب (WhatsApp)</strong>
+              <p>يتم تحويل العميل برابط مباشر إلى رقم خدمة العملاء المعتمد لتقديم الشكاوى أو طلب التوضيحات يدوياً ويقوم الدعم الفني بمتابعتها.</p>
             </div>
           </div>
         </div>

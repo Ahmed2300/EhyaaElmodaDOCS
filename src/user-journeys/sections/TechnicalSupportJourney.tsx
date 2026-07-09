@@ -8,22 +8,9 @@ const TechnicalSupportJourney: React.FC = () => {
 
   return (
     <section id="technical-support" className="docs-section">
-      <SectionHeader icon="support_agent" title="رحلة الدعم الفني" description="معالجة الشكاوى وإدارة محتوى الواجهة وعمليات الاستيراد الجماعي للعملاء" />
+      <SectionHeader icon="support_agent" title="رحلة الدعم الفني" description="إدارة محتوى الواجهة وعمليات الاستيراد الجماعي للعملاء والتكاملات" />
 
-      <JourneyStep number={1} title="مراقبة وحل شكاوى العملاء" icon="confirmation_number" color={roleColor}
-        apiCalls={[
-          { method: 'GET', path: '/api/v1/feedback/complain', desc: 'قائمة شكاوى العملاء' },
-        ]}
-      >
-        <p>يراجع فريق الدعم الفني الشكاوى المسجلة من العملاء ويعالجها:</p>
-        <ul className="journey-detail-list">
-          <li>تصفية التذاكر حسب درجة الاستعجال (منخفض، عادي، مرتفع، عاجل)</li>
-          <li>التنسيق مع المندوبين لحل مشاكل التوصيل والمواعيد</li>
-          <li>متابعة حالة كل تذكرة حتى الإغلاق</li>
-        </ul>
-      </JourneyStep>
-
-      <JourneyStep number={2} title="إدارة محتوى الواجهة" icon="web" color={roleColor}
+      <JourneyStep number={1} title="إدارة محتوى الواجهة" icon="web" color={roleColor}
         apiCalls={[
           { method: 'POST', path: '/api/v1/settings/welcome-settings', desc: 'تحديث محتوى صفحة الهبوط' },
         ]}
@@ -47,7 +34,7 @@ const TechnicalSupportJourney: React.FC = () => {
         </div>
       </JourneyStep>
 
-      <JourneyStep number={3} title="إدارة التكاملات" icon="integration_instructions" color={roleColor}
+      <JourneyStep number={2} title="إدارة التكاملات" icon="integration_instructions" color={roleColor}
         apiCalls={[
           { method: 'POST', path: '/api/v1/content/settings/toggle-meta', desc: 'تبديل حالة Meta Pixel API' },
         ]}
@@ -60,7 +47,7 @@ const TechnicalSupportJourney: React.FC = () => {
         </ul>
       </JourneyStep>
 
-      <JourneyStep number={4} title="استيراد جهات الاتصال الجماعي" icon="upload_file" color={roleColor} isLast
+      <JourneyStep number={3} title="استيراد جهات الاتصال الجماعي" icon="upload_file" color={roleColor} isLast
         apiCalls={[
           { method: 'POST', path: '/api/v1/contacts/import', desc: 'رفع ملف جهات اتصال' },
           { method: 'GET', path: '/api/v1/contacts/import/{batch_id}/status', desc: 'التحقق من حالة المعالجة' },

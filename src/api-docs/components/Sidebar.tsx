@@ -29,7 +29,6 @@ const navSections: { name: string; items: NavItem[] }[] = [
       { id: 'planning-endpoints', label: 'التخطيط', icon: 'route' },
       { id: 'financial-endpoints', label: 'النظام المالي والعهد', icon: 'payments' },
       { id: 'tracking-endpoints', label: 'التتبع', icon: 'my_location' },
-      { id: 'feedback-endpoints', label: 'التغذية الراجعة', icon: 'feedback' },
       { id: 'sse-endpoints', label: 'البث المباشر', icon: 'stream' },
       { id: 'reports-endpoints', label: 'التقارير', icon: 'bar_chart' },
     ],

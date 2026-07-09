@@ -11,7 +11,6 @@ import BlocklistEndpointsSection from './sections/BlocklistEndpointsSection';
 import PlanningEndpointsSection from './sections/PlanningEndpointsSection';
 import FinancialEndpointsSection from './sections/FinancialEndpointsSection';
 import TrackingEndpointsSection from './sections/TrackingEndpointsSection';
-import FeedbackEndpointsSection from './sections/FeedbackEndpointsSection';
 import SSEEndpointsSection from './sections/SSEEndpointsSection';
 import ReportsSection from './sections/ReportsSection';
 import AuditSection from './sections/AuditSection';
@@ -33,7 +32,6 @@ const sectionIds = [
   'planning-endpoints',
   'financial-endpoints',
   'tracking-endpoints',
-  'feedback-endpoints',
   'sse-endpoints',
   'reports-endpoints',
   'audit',
@@ -104,7 +102,6 @@ const ApiDocs: React.FC = () => {
         <PlanningEndpointsSection />
         <FinancialEndpointsSection />
         <TrackingEndpointsSection />
-        <FeedbackEndpointsSection />
         <SSEEndpointsSection />
         <ReportsSection />
         <AuditSection />
