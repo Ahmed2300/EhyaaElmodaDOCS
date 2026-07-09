@@ -16,10 +16,19 @@ const modules = [
 ];
 
 const customerStatuses = [
-  { value: 'new', label: 'جديد', desc: 'الملف مسجل، لم يتم جمع أي طلبات بعد' },
-  { value: 'active', label: 'نشط', desc: 'أكمل عملية تجارية واحدة على الأقل' },
-  { value: 'rejected', label: 'محظور', desc: 'محظور بسبب احتيال أو تجاوز حد أو موقع محظور' },
-  { value: 'archived', label: 'مؤرشف', desc: 'غير نشط أو تم تحديده كموقع غير أساسي' },
+  { value: 'new', label: 'جديد', desc: 'الملف مسجل حديثاً ولم يتم اتخاذ إجراء عليه' },
+  { value: 'wa_sent', label: 'تم إرسال واتساب', desc: 'تم بدء التواصل التلقائي عبر واتساب' },
+  { value: 'replied', label: 'تم الرد', desc: 'رد العميل على رسالة الواتساب' },
+  { value: 'negotiating', label: 'جاري التواصل', desc: 'جاري التفاوض الهاتفي أو البيعي مع العميل' },
+  { value: 'follow_up', label: 'متابعة لاحقاً', desc: 'تم تحديد موعد لمتابعة العميل مستقبلاً' },
+  { value: 'postponed', label: 'مؤجل', desc: 'تأجيل موعد المعاملة بناءً على رغبة العميل' },
+  { value: 'confirmed', label: 'تم الشراء', desc: 'تأكيد إتمام المعاملة بنجاح' },
+  { value: 'no_answer', label: 'لم يرد', desc: 'لم يتمكن منسق الاتصال من الوصول للعميل' },
+  { value: 'rejected', label: 'مرفوض', desc: 'تم رفض التعامل مع العميل أو حظره' },
+  { value: 'visited', label: 'تمت الزيارة', desc: 'قام المندوب بزيارة العميل ميدانياً' },
+  { value: 'delivered', label: 'تم التوصيل', desc: 'تم تسليم الأوزان وتصفية المعاملة' },
+  { value: 'out_for_delivery', label: 'خارج للتوصيل', desc: 'المندوب في طريقه لموقع العميل' },
+  { value: 'archived', label: 'مؤرشف', desc: 'موقع غير أساسي أو عميل تم أرشفته تشغيلياً' },
 ];
 
 const customerFields = [
@@ -29,7 +38,7 @@ const customerFields = [
   { name: 'phone', type: 'encrypted', desc: 'رقم الموبايل المشفّر عند التخزين' },
   { name: 'whatsapp', type: 'string', desc: 'رقم الواتساب' },
   { name: 'phone_hash', type: 'string', desc: 'بصمة الهاتف للبحث السريع' },
-  { name: 'status', type: 'enum', desc: 'حالة الهوية: new / active / rejected / archived' },
+  { name: 'status', type: 'string (Validated)', desc: 'حالة العميل (التحقق من صحتها في استمارات الإدخال)' },
   { name: 'trust_score', type: 'integer', desc: 'مؤشر الأمان والجودة' },
   { name: 'importance_score', type: 'integer', desc: 'نقاط الأولوية الجغرافية' },
   { name: 'assigned_rep_id', type: 'FK', desc: 'المندوب المعين (users.id)' },
