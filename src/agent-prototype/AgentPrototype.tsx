@@ -915,44 +915,50 @@ const AgentPrototype: React.FC = () => {
         <div style={{ flex: 1, minWidth: 280, maxWidth: 500 }}>
           <div style={{ background: '#ffffff', padding: 24, borderRadius: 16, border: '1px solid #dadce0' }}>
             <h3 style={{ fontSize: 16, fontWeight: 700, color: '#202124', marginBottom: 12 }}>
-              💡 دليل المحاكاة التفاعلية:
+              💡 دليل المحاكاة التفاعلية وقواعد العمل الفنية:
             </h3>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div>
                 <strong style={{ display: 'block', fontSize: 13, color: '#1a73e8', marginBottom: 2 }}>شاشة 1: الرئيسية والعهدة</strong>
-                <p style={{ fontSize: 12, color: '#5f6368', margin: 0 }}>تستعرض محفظة الكابتن النقدية (5,000 ج.م) وحالته الميدانية.</p>
-              </div>
-
-              <div>
-                <strong style={{ display: 'block', fontSize: 13, color: '#1a73e8', marginBottom: 2 }}>شاشة 2: حجز الخريطة بالدائرة</strong>
-                <p style={{ fontSize: 12, color: '#5f6368', margin: 0 }}>
-                  اسحب شريط نطاق الدائرة. ستشاهد الطلبات التي تقع ضمن النطاق تضيء باللون الأزرق. اضغط "حجز الطلبات" لإضافتها لخطتك تلقائياً.
+                <p style={{ fontSize: 12, color: '#5f6368', margin: 0, lineHeight: 1.5 }}>
+                  تستعرض محفظة الكابتن النقدية المسحوبة من حقل <code>users.financial_imprest</code>. يتم شحن العهدة صباحاً من قبل المحاسب عبر <code>POST /api/v1/admin/accounting/imprest/adjust</code> لتوثيق الاستلام.
                 </p>
               </div>
 
               <div>
-                <strong style={{ display: 'block', fontSize: 13, color: '#1a73e8', marginBottom: 2 }}>شاشة 3: خط السير اليومي</strong>
-                <p style={{ fontSize: 12, color: '#5f6368', margin: 0 }}>تستعرض الطلبات المحجوزة مرتبة بالمسافات الجغرافية لبدء الوصول.</p>
+                <strong style={{ display: 'block', fontSize: 13, color: '#1a73e8', marginBottom: 2 }}>شاشة 2: حجز الخريطة بالدائرة (اليوم السابق)</strong>
+                <p style={{ fontSize: 12, color: '#5f6368', margin: 0, lineHeight: 1.5 }}>
+                  يحدد المندوب منطقة عمل الغد بالدائرة الجغرافية. يستعلم النظام عبر <code>self-assign/query</code> ويحجز عبر <code>self-assign/claim</code> باستخدام <strong>القفل التزامني (Pessimistic Concurrency Lock)</strong> لتجنب التعيين المزدوج، مع بث لحظي <code>SSE Stream</code> لتحديث خرائط المناديب الآخرين.
+                </p>
+              </div>
+
+              <div>
+                <strong style={{ display: 'block', fontSize: 13, color: '#1a73e8', marginBottom: 2 }}>شاشة 3: خط السير اليومي وتأكيد المواعيد</strong>
+                <p style={{ fontSize: 12, color: '#5f6368', margin: 0, lineHeight: 1.5 }}>
+                  يقوم المندوب بالتواصل مع العملاء هاتفياً لغربلة الطلبات. الطلب المؤكد يتحول لـ <code>SCHEDULED_VISITED (8)</code>، والمؤجل لـ <code>RESCHEDULED (9)</code>، والملغي لـ <code>CANCELLED (6)</code>، لتصفية مسار الغد الفعال.
+                </p>
               </div>
 
               <div style={{ background: '#fce8e6', padding: 12, borderRadius: 10, border: '1px solid #f5c6cb' }}>
-                <strong style={{ display: 'block', fontSize: 13, color: '#c5221f', marginBottom: 2 }}>شاشة 4: قفل المسافة 500م</strong>
-                <p style={{ fontSize: 12, color: '#c5221f', margin: 0 }}>
-                  اسحب شريط محاكاة اقتراب السيارة (GPS). إذا كنت بعيداً (أكثر من 500م)، فلن يسمح لك النظام بتسجيل الوصول. بمجرد الاقتراب، ينفتح الزر ويتحول للون الأخضر.
+                <strong style={{ display: 'block', fontSize: 13, color: '#c5221f', marginBottom: 2 }}>شاشة 4: قفل المسافة 500م (Check-in)</strong>
+                <p style={{ fontSize: 12, color: '#c5221f', margin: 0, lineHeight: 1.5 }}>
+                  عند الوصول، يرسل التطبيق إحداثيات GPS. يقارن الباك إند موقع المندوب بالمسار الجيوديسي لموقع الطلب <code>pick_up_coordinates</code> (معادلة Haversine). إذا زادت المسافة عن 500 متر، يتم رفض طلب الوصول برمجياً لحماية سلامة البيانات.
                 </p>
               </div>
 
               <div style={{ background: '#e6f4ea', padding: 12, borderRadius: 10, border: '1px solid #b7e1bd' }}>
-                <strong style={{ display: 'block', fontSize: 13, color: '#137333', marginBottom: 2 }}>شاشة 5: الخصم اللحظي للعهدة</strong>
-                <p style={{ fontSize: 12, color: '#137333', margin: 0 }}>
-                  أدخل وزن الملابس بالكيلو. يقوم النظام باحتساب القيمة فورياً. عند الضغط على "إتمام الزيارة"، يتم خصم المبلغ لحظياً من محفظة العهدة في لوحة التحكم وتحديث المخزون.
+                <strong style={{ display: 'block', fontSize: 13, color: '#137333', marginBottom: 2 }}>شاشة 5: الخصم اللحظي للعهدة (Check-out)</strong>
+                <p style={{ fontSize: 12, color: '#137333', margin: 0, lineHeight: 1.5 }}>
+                  يوزن المندوب الملابس ويسجلها. عند ضغط إنهاء، يحسب السيستم التكلفة (الوزن x سعر الكيلو) ويحدث الطلب لـ <code>PICKED_UP (3)</code> ويخصم القيمة <strong>فورياً ولحظياً</strong> من محفظة المندوب <code>financial_imprest</code> لضمان تسوية فورية.
                 </p>
               </div>
 
               <div>
-                <strong style={{ display: 'block', fontSize: 13, color: '#1a73e8', marginBottom: 2 }}>شاشة 6: إغلاق الشفت والمصاريف</strong>
-                <p style={{ fontSize: 12, color: '#5f6368', margin: 0 }}>يتم خصم مصروفات السيارة والوقود من العهدة المتبقية قبل إرسال التقرير النهائي للتسوية الدفترية.</p>
+                <strong style={{ display: 'block', fontSize: 13, color: '#1a73e8', marginBottom: 2 }}>شاشة 6: إغلاق الشفت والمصاريف (End Day)</strong>
+                <p style={{ fontSize: 12, color: '#5f6368', margin: 0, lineHeight: 1.5 }}>
+                  في نهاية اليوم، يسجل المندوب مصاريفه (وقود، يوميات) عبر <code>POST /api/v1/expenses</code> لتخصم من العهدة، ثم ينهي شفته عبر <code>POST /api/v1/plannings/end-day</code> ويطابق الكاش الفعلي مع المحاسب لتصفير رصيد محفظته.
+                </p>
               </div>
             </div>
           </div>

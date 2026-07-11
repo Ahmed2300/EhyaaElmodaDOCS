@@ -392,6 +392,123 @@ const FieldAgentJourney: React.FC = () => {
           </div>
         </div>
       </JourneyStep>
+
+      {/* === 9. Detailed Operational Scenarios & Exception Handling === */}
+      <div className="card" style={{ marginTop: 40, borderRight: '3px solid #d93025' }}>
+        <div className="card-title" style={{ color: '#d93025', marginBottom: 12 }}>
+          <Icon name="warning" size={24} className="card-icon" />
+          <span>السيناريوهات التشغيلية وحالات الاستثناء (Detailed Operational Scenarios)</span>
+        </div>
+        <p style={{ fontSize: 13, color: '#5f6368', marginBottom: 20 }}>
+          دليل محاكاة السيناريوهات الحية والمشاكل التشغيلية المتوقعة في الميدان وكيفية معالجتها برمجياً لضمان سلامة الدورة اللوجستية والمالية:
+        </p>
+
+        <div className="table-wrapper">
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'right' }}>
+            <thead>
+              <tr style={{ background: '#f8f9fa', borderBottom: '2px solid #e0e0e0' }}>
+                <th style={{ width: '22%', padding: '12px 8px', fontSize: 13, fontWeight: 700 }}>السيناريو وحالة الاستثناء</th>
+                <th style={{ width: '38%', padding: '12px 8px', fontSize: 13, fontWeight: 700 }}>سلوك وتفاعل المندوب (Frontend App)</th>
+                <th style={{ padding: '12px 8px', fontSize: 13, fontWeight: 700 }}>الضوابط البرمجية والأمان (Backend API)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* Scenario 1 */}
+              <tr style={{ borderBottom: '1px solid #eee' }}>
+                <td style={{ padding: '12px 8px', fontSize: 13, fontWeight: 'bold', color: '#c53929' }}>
+                  تداخل الحجز الجغرافي (Pessimistic Concurrency Lock)
+                </td>
+                <td style={{ padding: '12px 8px', fontSize: 13, lineHeight: 1.5 }}>
+                  - يفتح المندوب "أ" والمندوب "ب" الخريطة ويحدد كل منهما دائرة متقاطعة ويحاولان حجز الطلب نفسه في نفس الثانية.
+                  <br />
+                  - المندوب الذي يسجل الحجز متأخراً بأجزاء من الثانية يتلقى خطأ: "عذراً، الطلب محجوز مسبقاً".
+                  <br />
+                  - يتم تحديث الخرائط تلقائياً وإخفاء النقطة عبر البث اللحظي <code>SSE Stream</code>.
+                </td>
+                <td style={{ padding: '12px 8px', fontSize: 13, lineHeight: 1.5 }}>
+                  - يتم حجز الأسطر في قاعدة البيانات باستخدام <code>SELECT ... FOR UPDATE</code> داخل <code>DB::transaction</code>.
+                  <br />
+                  - يمنع الحجز المزدوج ويرمي خطأ 409 Conflict.
+                  <br />
+                  - يتم بث حدث <code>orders_claimed</code> فورياً لجميع المناديب النشطين لإزالة النقطة من خرائطهم.
+                </td>
+              </tr>
+
+              {/* Scenario 2 */}
+              <tr style={{ borderBottom: '1px solid #eee' }}>
+                <td style={{ padding: '12px 8px', fontSize: 13, fontWeight: 'bold', color: '#c53929' }}>
+                  التحقق الجغرافي المغلوط (Geofencing Guard Mismatch)
+                </td>
+                <td style={{ padding: '12px 8px', fontSize: 13, lineHeight: 1.5 }}>
+                  - يحاول المندوب عمل <strong>Check-in</strong> لتسجيل بدء الزيارة وهو لا يزال على بعد مسافة طويلة من موقع العميل (أكبر من 500 متر).
+                  <br />
+                  - يعرض التطبيق رسالة تنبيه حمراء: "يجب أن تكون على بعد 500 متر أو أقل من موقع العميل لتسجيل الوصول".
+                </td>
+                <td style={{ padding: '12px 8px', fontSize: 13, lineHeight: 1.5 }}>
+                  - يستقبل API إحداثيات GPS المرسلة من التطبيق: <code>POST /api/v1/planning/items/check-in</code>.
+                  <br />
+                  - يحسب مسافة Haversine الجيوديسية بين موقع المندوب وموقع الطلب الفعلي <code>pick_up_coordinates</code>.
+                  <br />
+                  - إذا كانت المسافة &gt; 500 متر، يرمي الاستعلام <code>ValidationException</code> ويرفض التحديث.
+                </td>
+              </tr>
+
+              {/* Scenario 3 */}
+              <tr style={{ borderBottom: '1px solid #eee' }}>
+                <td style={{ padding: '12px 8px', fontSize: 13, fontWeight: 'bold', color: '#c53929' }}>
+                  عجز رصيد العهدة المالية (Insufficient Imprest Balance)
+                </td>
+                <td style={{ padding: '12px 8px', fontSize: 13, lineHeight: 1.5 }}>
+                  - يقوم المندوب بوزن الملابس عند العميل وتكون تكلفتها الإجمالية (الوزن × السعر) أكبر من رصيد عهدته المتبقي.
+                  <br />
+                  - يعرض التطبيق رسالة خطأ عند المغادرة: "رصيد عهدتك المتبقي لا يكفي لإتمام هذه المشتريات، يرجى التواصل مع الإدارة لشحن المحفظة".
+                </td>
+                <td style={{ padding: '12px 8px', fontSize: 13, lineHeight: 1.5 }}>
+                  - عند إرسال طلب الـ Check-out: يتحقق النظام تلقائياً من أن رصيد عهدة المندوب الجاري <code>users.financial_imprest</code> أكبر من أو يساوي قيمة المشتريات المحسوبة.
+                  <br />
+                  - في حال عدم الكفاية، يتم رفض الطلب ويرفض السيستم تغيير حالة الأوردر لـ PICKED_UP حتى يتم شحن عهدته إدارياً عبر <code>imprest/adjust</code>.
+                </td>
+              </tr>
+
+              {/* Scenario 4 */}
+              <tr style={{ borderBottom: '1px solid #eee' }}>
+                <td style={{ padding: '12px 8px', fontSize: 13, fontWeight: 'bold', color: '#c53929' }}>
+                  تأجيل أو إلغاء الزيارة تلفونياً (Reschedule & Cancel)
+                </td>
+                <td style={{ padding: '12px 8px', fontSize: 13, lineHeight: 1.5 }}>
+                  - يتصل المندوب بالعملاء قبلها بيوم لتنسيق مواعيد بكرة، فيطلب عميل تأجيل الزيارة أو إلغائها نهائياً.
+                  <br />
+                  - يقوم المندوب بفتح نافذة العميل (Bottom Sheet) وتغيير الحالة فوراً لـ "تأجيل" أو "إلغاء".
+                </td>
+                <td style={{ padding: '12px 8px', fontSize: 13, lineHeight: 1.5 }}>
+                  - يتم معالجة الطلب برمجياً ويقوم الباك إند بتحديث حالة الأوردر لـ <code>RESCHEDULED (9)</code> أو <code>CANCELLED (6)</code>.
+                  <br />
+                  - يقوم النظام تلقائياً باستبعاد الطلب من خطة السير النشطة للمندوب لليوم التالي لضمان دقة إحصائيات الخطة.
+                </td>
+              </tr>
+
+              {/* Scenario 5 */}
+              <tr style={{ borderBottom: '1px solid #eee' }}>
+                <td style={{ padding: '12px 8px', fontSize: 13, fontWeight: 'bold', color: '#c53929' }}>
+                  ضعف تغطية الإنترنت بالميدان (Offline Tracking Mode)
+                </td>
+                <td style={{ padding: '12px 8px', fontSize: 13, lineHeight: 1.5 }}>
+                  - يدخل المندوب جراجاً أو منطقة تنقطع بها شبكة الإنترنت أثناء تتبع موقعه بالـ GPS.
+                  <br />
+                  - يقوم التطبيق بحفظ الإحداثيات محلياً (نظام التخزين المؤقت LocalStorage/SQLite).
+                  <br />
+                  - بمجرد استعادة الشبكة، يقوم برفعها دفعة واحدة (Batch Sync) في الخلفية.
+                </td>
+                <td style={{ padding: '12px 8px', fontSize: 13, lineHeight: 1.5 }}>
+                  - تستقبل API التتبع <code>POST /api/v1/tracking/log</code> مصفوفة الإحداثيات المرفوعة، وتقوم بحفظها مؤقتاً في كاش Redis.
+                  <br />
+                  - يقوم الكرون جوب <code>tracking:persist</code> كل 3 دقائق بسحب الإحداثيات وحفظها بجدول <code>user_locations</code> بتوقيتها الأصلي.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </section>
   );
 };
