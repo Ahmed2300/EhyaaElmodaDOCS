@@ -34,11 +34,11 @@ const LiaisonLoopSection: React.FC = () => {
             <div className="liaison-step-num" style={{ background: '#1a73e8' }}>1</div>
             <div className="liaison-step-content">
               <div className="liaison-step-from-to">
-                <span className="liaison-from">الإدارة</span>
+                <span className="liaison-from">الإدارة / المندوب</span>
                 <Icon name="arrow_back" size={16} className="liaison-arrow" />
-                <span className="liaison-to">المندوب</span>
+                <span className="liaison-to">الخريطة</span>
               </div>
-              <p>توزيع وتصفية الطلبات النشطة للتشغيل بناءً على نطاقات التغطية الجغرافية. تظهر نقاط الطلبات النشطة تلقائياً على خريطة المندوب (Orders Map) لتحديد مسارات تجميع الملابس.</p>
+              <p>يقوم الأدمن أو المندوب مسبقاً بفتح الخريطة ورسم مضلع مغلق (Polygon) لتحديد منطقة تجميع الملابس المستهدفة (مثلاً المعادي). يستخلص النظام كافة طلبات الاستلام الواقعة داخل هذا المضلع تلقائياً لتشكيل خطة مسار المندوب لليوم التالي.</p>
             </div>
           </div>
 
@@ -110,7 +110,7 @@ const LiaisonLoopSection: React.FC = () => {
                 <Icon name="arrow_back" size={16} className="liaison-arrow" />
                 <span className="liaison-to">النظام</span>
               </div>
-              <p>تظهر التصفية فوراً للمحاسب/الأدمن في تقرير التصفية اليومية المالي. يعتمد المحاسب الفواتير المرفوعة عبر التطبيق ويسوي العهدة دفترياً، ويقرر قيمة شحن العهدة للمندوب لليوم التالي.</p>
+              <p>تظهر التصفية فوراً للمحاسب/الأدمن في تقرير العمليات اليومي المالي. يعتمد المحاسب الفواتير المرفوعة عبر التطبيق ويوثق الحركات المالية الميدانية، بينما يظل الرصيد المتبقي مستمراً وجارياً في محفظة المندوب لليوم التالي دون تصفير.</p>
             </div>
           </div>
         </div>
@@ -121,6 +121,26 @@ const LiaisonLoopSection: React.FC = () => {
       <p style={{ marginBottom: 16, color: '#5f6368', lineHeight: 1.7 }}>
         يوضح الجدول التالي سيناريو التنسيق اللحظي لمنع التداخل وحل التعارض عند قيام مندوبين بالبحث الجغرافي في نفس النطاق:
       </p>
+
+      {/* Polygon Selection Diagram */}
+      <div style={{
+        background: '#f8f9fa',
+        border: '1px solid #e0e0e0',
+        borderRadius: 8,
+        padding: 20,
+        marginTop: 16,
+        marginBottom: 24,
+        textAlign: 'center'
+      }}>
+        <img
+          src="/polygon_map_selection.png"
+          alt="رسم مضلع مغلق على الخريطة لتحديد الطلبات ميدانياً"
+          style={{ maxWidth: '100%', height: 'auto', borderRadius: 6, display: 'block', margin: '0 auto' }}
+        />
+        <p style={{ fontSize: 12, color: '#5f6368', marginTop: 10, marginBottom: 0, direction: 'rtl' }}>
+          <strong>شكل توضيحي:</strong> رسم مضلع مغلق (Polygon) لتحديد وفلترة الطلبات النشطة جغرافياً واستخلاصها بواسطة محرك الذكاء الاصطناعي دون الاعتماد على الموقع الحالي للمندوب.
+        </p>
+      </div>
 
       <div style={{ overflowX: 'auto', borderRadius: 8, border: '1px solid #e0e0e0' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', lineHeight: 1.6 }}>
@@ -136,10 +156,10 @@ const LiaisonLoopSection: React.FC = () => {
           <tbody>
             <tr style={{ borderBottom: '1px solid #e0e0e0' }}>
               <td style={{ padding: '10px 12px', fontWeight: 600 }}>1</td>
-              <td style={{ padding: '10px 12px' }}>يرسم دائرة بقطر 1 كم حول حي المعادي</td>
-              <td style={{ padding: '10px 12px' }}>يرسم دائرة متقاطعة بقطر 1 كم في المعادي</td>
+              <td style={{ padding: '10px 12px' }}>يرسم مضلعاً مغلقاً (Polygon) حول حي المعادي</td>
+              <td style={{ padding: '10px 12px' }}>يرسم مضلعاً مغلقاً متقاطعاً في نفس المنطقة بالمعادي</td>
               <td style={{ padding: '10px 12px' }}>يستقبل طلبات الاستعلام الجغرافية</td>
-              <td style={{ padding: '10px 12px' }}>يعود لكل منهما قائمة بالطلبات المتاحة (تشمل الطلب REQ-10)</td>
+              <td style={{ padding: '10px 12px' }}>يعود لكل منهما قائمة الطلبات الواقعة داخل المضلع المرسوم (تشمل الطلب REQ-10)</td>
             </tr>
             <tr style={{ borderBottom: '1px solid #e0e0e0', background: '#f8f9fa' }}>
               <td style={{ padding: '10px 12px', fontWeight: 600 }}>2</td>

@@ -39,15 +39,15 @@ const FieldAgentJourney: React.FC = () => {
           </div>
         </div>
 
-        <h4 className="journey-subtitle">أداة رسم الدائرة الجغرافية:</h4>
+        <h4 className="journey-subtitle">أداة رسم مضلع مغلق على الخريطة (Polygon Selection):</h4>
         <div className="journey-verification-steps">
           <div className="journey-verify-item">
             <div className="journey-verify-icon" style={{ background: '#e8f5e9', color: '#1b5e20' }}>
               <Icon name="near_me" size={20} />
             </div>
             <div>
-              <strong>رسم دائرة حول المنطقة المطلوبة</strong>
-              <p>يستخدم المندوب أداة رسم مخصصة على الخريطة ليرسم دائرة جغرافية حول المنطقة التي يرغب في العمل بها وتجميع الملابس منها.</p>
+              <strong>رسم مضلع مغلق حول المنطقة المستهدفة</strong>
+              <p>يستخدم المندوب أو الأدمن أداة رسم حر أو نقاط مغلقة على الخريطة لرسم مضلع يغطي المنطقة الجغرافية المحددة للعمل (مثلاً حي المعادي بالقاهرة) دون الارتباط بموقعه الجغرافي الحالي (مثلاً لو كان حالياً في المنصورة ويخطط للسفر غداً للقاهرة).</p>
             </div>
           </div>
           <div className="journey-verify-item">
@@ -55,15 +55,34 @@ const FieldAgentJourney: React.FC = () => {
               <Icon name="filter_alt" size={20} />
             </div>
             <div>
-              <strong>فلترة الطلبات الجغرافية</strong>
-              <p>بمجرد رسم الدائرة، يقوم النظام بالاستعلام جغرافياً وجلب كافة الطلبات النشطة المتاحة داخل النطاق. الطلبات المسندة بالفعل لمناديب آخرين لا تظهر مطلقاً.</p>
+              <strong>فلترة الطلبات الجغرافية بالمضلع</strong>
+              <p>بمجرد إغلاق شكل المضلع على الخريطة، يقوم محرك البحث الجغرافي باستخلاص كافة طلبات الاستلام النشطة والعملاء الواقعين بداخل المضلع تمهيداً لإسنادها وجدولتها.</p>
             </div>
           </div>
         </div>
 
         <div className="journey-note" style={{ marginTop: 12 }}>
           <Icon name="info" size={16} style={{ color: '#d93025' }} />
-          <span>تعرض القائمة تفاصيل الطلبات مثل: المنطقة، الحالات التشغيلية، والوزن المتوقع. الطلبات التي تم إسنادها لمناديب آخرين لا تظهر حتى وإن وقعت داخل محيط الدائرة.</span>
+          <span>تعرض القائمة تفاصيل الطلبات مثل: المنطقة، الحالات التشغيلية، والوزن المتوقع. الطلبات التي تم إسنادها لمناديب آخرين لا تظهر حتى وإن وقعت داخل حدود المضلع المرسوم.</span>
+        </div>
+
+        {/* Polygon Selection Diagram */}
+        <div style={{
+          background: '#f8f9fa',
+          border: '1px solid #e0e0e0',
+          borderRadius: 8,
+          padding: 16,
+          marginTop: 16,
+          textAlign: 'center'
+        }}>
+          <img
+            src="/step1_polygon_draw.png"
+            alt="تحديد الطلبات برسم مضلع مغلق على الخريطة"
+            style={{ maxWidth: '100%', height: 'auto', borderRadius: 4, display: 'block', margin: '0 auto' }}
+          />
+          <p style={{ fontSize: 11, color: '#5f6368', marginTop: 8, marginBottom: 0 }}>
+            <strong>توضيح:</strong> رسم مضلع مغلق (Polygon) لتحديد وفلترة الطلبات النشطة جغرافياً واستخلاصها بواسطة محرك الذكاء الاصطناعي لمشروع "إحياء الموضة".
+          </p>
         </div>
       </JourneyStep>
 
@@ -119,6 +138,25 @@ const FieldAgentJourney: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* Step 2 Diagram */}
+        <div style={{
+          background: '#f8f9fa',
+          border: '1px solid #e0e0e0',
+          borderRadius: 8,
+          padding: 16,
+          marginTop: 16,
+          textAlign: 'center'
+        }}>
+          <img
+            src="/step2_order_claim.png"
+            alt="الإسناد الذاتي للطلب"
+            style={{ maxWidth: '100%', height: 'auto', borderRadius: 4, display: 'block', margin: '0 auto' }}
+          />
+          <p style={{ fontSize: 11, color: '#5f6368', marginTop: 8, marginBottom: 0 }}>
+            <strong>توضيح:</strong> تأكيد إسناد وحجز الطلبات للمندوب بنجاح (مع قفل متزامن لمنع الحجز المزدوج) لمشروع "إحياء الموضة".
+          </p>
+        </div>
       </JourneyStep>
 
       {/* === 3. Finalize & Lock Plan === */}
@@ -137,7 +175,7 @@ const FieldAgentJourney: React.FC = () => {
             </div>
             <div>
               <strong>قفل الاستكشاف والحجز</strong>
-              <p>بمجرد تأكيد الخطة، يتم قفل إمكانية حجز أو إسناد أي طلبات جديدة من الخريطة للمندوب. يُحجب زر رسم الدائرة تماماً للتركيز على الزيارات الحالية.</p>
+              <p>بمجرد تأكيد الخطة، يتم قفل إمكانية حجز أو إسناد أي طلبات جديدة من الخريطة للمندوب. يُحجب زر رسم المضلع تماماً للتركيز على الزيارات الحالية.</p>
             </div>
           </div>
           <div className="journey-verify-item">
@@ -158,6 +196,25 @@ const FieldAgentJourney: React.FC = () => {
               <p>المشرف العام (Super Admin) هو الشخص الوحيد القادر على فك القفل التشغيلي للمندوب أثناء المسار يدوياً لتمكينه من إعادة حجز طلبات إضافية عند الحاجة.</p>
             </div>
           </div>
+        </div>
+
+        {/* Step 3 Diagram */}
+        <div style={{
+          background: '#f8f9fa',
+          border: '1px solid #e0e0e0',
+          borderRadius: 8,
+          padding: 16,
+          marginTop: 16,
+          textAlign: 'center'
+        }}>
+          <img
+            src="/step3_plan_locked.png"
+            alt="اعتماد وقفل خطة المسار"
+            style={{ maxWidth: '100%', height: 'auto', borderRadius: 4, display: 'block', margin: '0 auto' }}
+          />
+          <p style={{ fontSize: 11, color: '#5f6368', marginTop: 8, marginBottom: 0 }}>
+            <strong>توضيح:</strong> قفل وإغلاق خطة السير تماماً لمنع أي تعديلات أثناء التنفيذ الميداني لمشروع "إحياء الموضة".
+          </p>
         </div>
       </JourneyStep>
 
@@ -205,6 +262,25 @@ const FieldAgentJourney: React.FC = () => {
             <span>تعديل حالة العميل</span>
           </div>
         </div>
+
+        {/* Step 4 Diagram */}
+        <div style={{
+          background: '#f8f9fa',
+          border: '1px solid #e0e0e0',
+          borderRadius: 8,
+          padding: 16,
+          marginTop: 16,
+          textAlign: 'center'
+        }}>
+          <img
+            src="/step4_client_call.png"
+            alt="تجهيز المواعيد والتواصل"
+            style={{ maxWidth: '100%', height: 'auto', borderRadius: 4, display: 'block', margin: '0 auto' }}
+          />
+          <p style={{ fontSize: 11, color: '#5f6368', marginTop: 8, marginBottom: 0 }}>
+            <strong>توضيح:</strong> التواصل مع العميل لتأكيد وتحديد موعد الزيارة وتغيير الحالة إلى مؤكد لمشروع "إحياء الموضة".
+          </p>
+        </div>
       </JourneyStep>
 
       {/* === 5. Check-in === */}
@@ -249,6 +325,25 @@ const FieldAgentJourney: React.FC = () => {
           <div>
             <strong>شرط المسافة الجغرافي:</strong> يقارن النظام موقع المندوب بـإحداثيات الطلب الحالي (pick_up_coordinates). إذا زاد البعد عن 500 متر، يتم إلغاء الـ Check-in لحماية البيانات من التلاعب ومنع التحديثات الوهمية.
           </div>
+        </div>
+
+        {/* Step 5 Diagram */}
+        <div style={{
+          background: '#f8f9fa',
+          border: '1px solid #e0e0e0',
+          borderRadius: 8,
+          padding: 16,
+          marginTop: 16,
+          textAlign: 'center'
+        }}>
+          <img
+            src="/step5_visit_checkin.png"
+            alt="تسجيل بدء الزيارة مع شرط المسافة الجغرافي"
+            style={{ maxWidth: '100%', height: 'auto', borderRadius: 4, display: 'block', margin: '0 auto' }}
+          />
+          <p style={{ fontSize: 11, color: '#5f6368', marginTop: 8, marginBottom: 0 }}>
+            <strong>توضيح:</strong> تسجيل الوصول (Check-in) عند التواجد داخل نطاق الـ 500 متر من إحداثيات موقع العميل لمشروع "إحياء الموضة".
+          </p>
         </div>
       </JourneyStep>
 
@@ -297,6 +392,25 @@ const FieldAgentJourney: React.FC = () => {
             <strong>بعد الحفظ والخصم الفوري:</strong> يتم تحويل حالة الطلب لـ PICKED_UP، ويقوم النظام باحتساب قيمة المشتريات (الوزن المكتوب × سعر الشراء المعتمد) وخصمها فوراً ولحظياً من رصيد عهدة المندوب الجارية في قاعدة البيانات، وتحديث إحصائيات المخزون مباشرة لكل أوردر بمفرده (دون الانتظار لنهاية اليوم).
           </div>
         </div>
+
+        {/* Step 6 Diagram */}
+        <div style={{
+          background: '#f8f9fa',
+          border: '1px solid #e0e0e0',
+          borderRadius: 8,
+          padding: 16,
+          marginTop: 16,
+          textAlign: 'center'
+        }}>
+          <img
+            src="/step6_visit_checkout.png"
+            alt="إتمام الزيارة وتوريد الوزن والخصم التلقائي"
+            style={{ maxWidth: '100%', height: 'auto', borderRadius: 4, display: 'block', margin: '0 auto' }}
+          />
+          <p style={{ fontSize: 11, color: '#5f6368', marginTop: 8, marginBottom: 0 }}>
+            <strong>توضيح:</strong> وزن الملابس المشتراة وتوريدها مع الخصم الفوري والمباشر من محفظة المندوب لمشروع "إحياء الموضة".
+          </p>
+        </div>
       </JourneyStep>
 
       {/* === 7. Continuous Tracking === */}
@@ -323,6 +437,25 @@ const FieldAgentJourney: React.FC = () => {
             <Icon name="route" size={18} className="journey-field-icon" />
             <span>بناء مسار تتبع كامل</span>
           </div>
+        </div>
+
+        {/* Step 7 Diagram */}
+        <div style={{
+          background: '#f8f9fa',
+          border: '1px solid #e0e0e0',
+          borderRadius: 8,
+          padding: 16,
+          marginTop: 16,
+          textAlign: 'center'
+        }}>
+          <img
+            src="/step7_bg_tracking.png"
+            alt="التتبع المستمر أثناء التنقل"
+            style={{ maxWidth: '100%', height: 'auto', borderRadius: 4, display: 'block', margin: '0 auto' }}
+          />
+          <p style={{ fontSize: 11, color: '#5f6368', marginTop: 8, marginBottom: 0 }}>
+            <strong>توضيح:</strong> تسجيل المسار الفعلي وحالة التتبع في الخلفية طوال اليوم الميداني لمشروع "إحياء الموضة".
+          </p>
         </div>
       </JourneyStep>
 
@@ -390,6 +523,25 @@ const FieldAgentJourney: React.FC = () => {
           <div>
             <strong>بعد التأكيد:</strong> يقوم النظام تلقائياً بخصم المجموع الإجمالي من رصيد عهدة المندوب. أي عملية شحن أو زيادة للعهدة تتم حصرياً من لوحة تحكم الإدارة.
           </div>
+        </div>
+
+        {/* Step 8 Diagram */}
+        <div style={{
+          background: '#f8f9fa',
+          border: '1px solid #e0e0e0',
+          borderRadius: 8,
+          padding: 16,
+          marginTop: 16,
+          textAlign: 'center'
+        }}>
+          <img
+            src="/step8_shift_lock.png"
+            alt="إقفال الشفت وتصفية العهدة اليومية"
+            style={{ maxWidth: '100%', height: 'auto', borderRadius: 4, display: 'block', margin: '0 auto' }}
+          />
+          <p style={{ fontSize: 11, color: '#5f6368', marginTop: 8, marginBottom: 0 }}>
+            <strong>توضيح:</strong> احتساب وتدقيق المصروفات وإقفال الشفت اليومي مع ترحيل الرصيد المتبقي مستمراً لليوم التالي لمشروع "إحياء الموضة".
+          </p>
         </div>
       </JourneyStep>
 
